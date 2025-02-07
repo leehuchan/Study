@@ -10,6 +10,11 @@ using namespace std;
 // 1. 완전이진트리
 // 2. 힙이론 (최대힙, 최소힙)
 
+// 시간복잡도
+// 삽입 : logN
+// 삭제 : logN
+// 힙정렬 : N X logN
+
 template <typename T, typename Container = vector<T>, typename Pred = less<int>>
 class PriorityQueue
 {
