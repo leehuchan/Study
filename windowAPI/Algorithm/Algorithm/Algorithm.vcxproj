@@ -19,11 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BinarySearchTree.cpp" />
-    <ClCompile Include="BST.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="BST.h" />
+    <ClCompile Include="DP(4).cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
