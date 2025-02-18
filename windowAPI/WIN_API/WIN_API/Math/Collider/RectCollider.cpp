@@ -73,11 +73,13 @@ bool RectCollider::IsCollision(shared_ptr<CircleCollider> other)
 
 	// x축 내적
 	float lengthX = abs(rightV.Dot(dir));
+
 	if (lengthX > _halfSize.x + circleRadius)
 		return false;
 
 	// y축 내적
 	float lengthY = abs(upV.Dot(dir));
+
 	if (lengthY > _halfSize.y + circleRadius)
 		return false;
 

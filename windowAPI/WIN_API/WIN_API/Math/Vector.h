@@ -95,7 +95,7 @@ public:
 		return result;
 
 	}
-	void Rotate(float theta)
+	void Rotate(float theta) // »ï°¢ÇÔ¼öÀÇ µ¡¼ÀÁ¤¸®
 	{
 		x = x * cosf(theta) - y * sinf(theta);
 		y = x * sinf(theta) + y * cosf(theta);
