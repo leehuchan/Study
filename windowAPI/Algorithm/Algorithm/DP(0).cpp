@@ -28,6 +28,8 @@ int Fibonacci(int n)
 	if (n == 2)
 		countA++;
 
+	// 메모이제이션
+
 	// 구하기
 	return Fibonacci(n - 1) + Fibonacci(n - 2);
 }
