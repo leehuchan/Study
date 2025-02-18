@@ -18,6 +18,11 @@ public:
 	int Top() { return _center.y - _halfSize.y; }
 	int Bottom() { return _center.y + _halfSize.y; }
 
+	Vector GetHalfSize() { return _halfSize; }
+
+	void SetSize(Vector size) { _halfSize = size * 0.5; }
+	Vector GetSize() { return _halfSize * 2.0f; }
+
 private:
 
 	Vector					_halfSize;

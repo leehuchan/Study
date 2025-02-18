@@ -43,16 +43,16 @@ void CannonScene::Update()
 		break;
 	}
 
-	//// cannon1의 공들과 cannon2의 몸체와 충돌 시
-	//for (auto ball : _cannon->GetBalls())
-	//{
-	//	_cannon2->IsCollision(ball);
-	//}
+	// cannon1의 공들과 cannon2의 몸체와 충돌 시
+	for (auto ball : _cannon->GetBalls())
+	{
+		_cannon2->IsCollision(ball);
+	}
 
-	//for (auto ball : _cannon2->GetBalls())
-	//{
-	//	_cannon->IsCollision(ball);
-	//}
+	for (auto ball : _cannon2->GetBalls())
+	{
+		_cannon->IsCollision(ball);
+	}
 }
 
 void CannonScene::Render(HDC hdc)
