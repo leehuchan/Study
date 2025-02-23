@@ -45,8 +45,8 @@ void AMyTutoPawn::Tick(float DeltaTime)
 	// DeltaTime : 1번 Update에 걸리는 시간
 
 	// 회전
-	FRotator rot = FRotator(0, 1, 0);
-	AddActorLocalRotation(rot * _rotSpeed * DeltaTime);
+	//FRotator rot = FRotator(0, 1, 0);
+	//AddActorLocalRotation(rot * _rotSpeed * DeltaTime);
 
 }
 
