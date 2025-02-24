@@ -70,13 +70,15 @@ void AMyCharacter::Move(const FInputActionValue& value)
 	{
 		if (moveVector.Length() > 0.0f)
 		{
-			UE_LOG(LogTemp, Error, TEXT("Y : %f"), moveVector.Y);
-			UE_LOG(LogTemp, Error, TEXT("X : %f"), moveVector.X);
+			//UE_LOG(LogTemp, Error, TEXT("Y : %f"), moveVector.Y);
+			//UE_LOG(LogTemp, Error, TEXT("X : %f"), moveVector.X);
 
-			FVector forWard = GetActorForwardVector() * moveVector.Y * 10.0f;
-			FVector right = GetActorRightVector() * moveVector.X * 10.0f;
-			FVector newLocation = GetActorLocation() + forWard + right;
-			SetActorLocation(newLocation);
+			FVector forWard = GetActorForwardVector();
+			FVector right = GetActorRightVector();
+
+			AddMovementInput(forWard, moveVector.Y * _speed);
+			AddMovementInput(right, moveVector.X * _speed);
+
 		}
 	}
 }
