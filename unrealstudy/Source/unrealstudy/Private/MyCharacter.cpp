@@ -12,6 +12,10 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
+
+#include "MyAnimInstance.h"
+
 // Sets default values
 AMyCharacter::AMyCharacter()
 {
@@ -38,6 +42,15 @@ void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	_animInstance = Cast<UMyAnimInstance>(GetMesh()->GetAnimInstance());
+	if (_animInstance == nullptr)
+		UE_LOG(LogTemp, Error ,TEXT("AnimInstance did not Set"));
+
+	// Delegate 바인딩 연습
+	_animInstance->_attackStart.BindUObject(this, &AMyCharacter::TestDelegate);
+	_animInstance->_attackStart2.BindUObject(this, &AMyCharacter::TestDelegate2);
+	_animInstance->_attackStart3.AddDynamic(this, &AMyCharacter::TestDelegate);
+	_animInstance->OnMontageEnded.AddDynamic(this, &AMyCharacter::AttackEnd);
 }
 
 // Called every frame
@@ -58,16 +71,22 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	{
 		enhancedInputCompnent->BindAction(_moveAction, ETriggerEvent::Triggered, this, &AMyCharacter::Move);
 		enhancedInputCompnent->BindAction(_lookAction, ETriggerEvent::Triggered, this, &AMyCharacter::Look);
+		enhancedInputCompnent->BindAction(_jumpAction, ETriggerEvent::Triggered, this, &AMyCharacter::JumpA);
+		enhancedInputCompnent->BindAction(_attackAction, ETriggerEvent::Triggered, this, &AMyCharacter::Attack);
 
 	}
 }
 
 void AMyCharacter::Move(const FInputActionValue& value)
 {
+	if (_isAttack)
+		return;
+
 	FVector2D moveVector = value.Get<FVector2D>();
 
 	if (Controller != nullptr)
 	{
+
 		if (moveVector.Length() > 0.0f)
 		{
 			//UE_LOG(LogTemp, Error, TEXT("Y : %f"), moveVector.Y);
@@ -93,3 +112,56 @@ void AMyCharacter::Look(const FInputActionValue& value)
 	}
 }
 
+void AMyCharacter::JumpA(const FInputActionValue& value)
+{
+	if (_isAttack)
+		return;
+
+	//if (Controller != nullptr && CanJump())
+	//{
+	//	LaunchCharacter(FVector(0, 0, _jumpVelocity), false, true);
+	//}
+	bool isPress = value.Get<bool>();
+
+	if (isPress)
+	{
+		ACharacter::Jump();
+	}
+}
+
+void AMyCharacter::Attack(const FInputActionValue& value)
+{
+	if (_isAttack)
+		return;
+
+	bool isPress = value.Get<bool>();
+
+	if (isPress)
+	{
+		_isAttack = true;
+		_animInstance->PlayAnimMontage();
+	}
+}
+
+void AMyCharacter::TestDelegate()
+{
+	UE_LOG(LogTemp, Log, TEXT("Attack Start Delegate Test"));
+}
+
+int32 AMyCharacter::TestDelegate2(int32 a, int32 b)
+{
+	UE_LOG(LogTemp, Log, TEXT("Attack Start Delegate Test, %d, %d"), a, b);
+
+	return -1;
+}
+
+void AMyCharacter::AttackEnd(UAnimMontage* Montage, bool BInterrupted)
+{
+	_isAttack = false;
+}
+
+bool AMyCharacter::CanJump() const
+{
+    // 점프 가능 여부 확인
+    return GetCharacterMovement()->IsMovingOnGround();
+}

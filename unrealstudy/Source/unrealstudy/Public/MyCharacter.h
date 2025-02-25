@@ -6,9 +6,6 @@
 #include "GameFramework/Character.h"
 #include "MyCharacter.generated.h"
 
-class UInputAction;
-struct FInputActionValue;
-
 UCLASS()
 class UNREALSTUDY_API AMyCharacter : public ACharacter
 {
@@ -29,8 +26,27 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION()
 	void Move(const struct FInputActionValue& value);
+	UFUNCTION()
 	void Look(const struct FInputActionValue& value);
+	UFUNCTION()
+	void JumpA(const struct FInputActionValue& value);
+	UFUNCTION()
+	void Attack(const struct FInputActionValue& value);
+
+	UFUNCTION()
+	void TestDelegate();
+
+	UFUNCTION()
+	int32 TestDelegate2(int32 a, int32 b);
+
+	UFUNCTION()
+	void AttackEnd(class UAnimMontage* Montage, bool BInterrupted);
+
+
+	bool CanJump() const;
+
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
@@ -38,6 +54,12 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* _lookAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* _jumpAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* _attackAction;
 
 	// 언리얼의 핵심구조
 	// 1. 상속
@@ -47,13 +69,22 @@ private:
 	// 1. Actor 컴포넌트
 	// 2. Scene 컴포넌트
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* _camera;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* _springArm;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stat", meta = (AllowPrivateAccess = "true"))
 	float _speed = 10.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stat", meta = (AllowPrivateAccess = "true"))
+	float _jumpVelocity = 500.f;
+
+	// Attack 액션이 호출되면 isAttack을 true
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+	bool _isAttack;
+
+	UPROPERTY()
+	class UMyAnimInstance* _animInstance;
 };
