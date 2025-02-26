@@ -49,6 +49,8 @@ public:
 
 	bool CanJump() const;
 
+	void Attack_Hit();
+
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))

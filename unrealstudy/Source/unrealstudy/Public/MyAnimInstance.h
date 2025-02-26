@@ -22,6 +22,8 @@ DECLARE_DELEGATE_RetVal_TwoParams(int32, AnimDelegateTest2, int32, int32);
 // 멀티캐스트 다이나믹 Delegate
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAnimDelegateTest3);
 
+DECLARE_MULTICAST_DELEGATE(AttackHitEvent);
+
 UCLASS()
 class UNREALSTUDY_API UMyAnimInstance : public UAnimInstance
 {
@@ -46,6 +48,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pawn", meta = (AllowPrivateAccess = "true"))
 	FAnimDelegateTest3 _attackStart3;
 
+	AttackHitEvent _hitEvent;
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pawn", Meta = (AllowPrivateAccess = "true"))

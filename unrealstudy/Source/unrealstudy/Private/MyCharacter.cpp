@@ -51,6 +51,8 @@ void AMyCharacter::BeginPlay()
 	_animInstance->_attackStart2.BindUObject(this, &AMyCharacter::TestDelegate2);
 	_animInstance->_attackStart3.AddDynamic(this, &AMyCharacter::TestDelegate);
 	_animInstance->OnMontageEnded.AddDynamic(this, &AMyCharacter::AttackEnd);
+	_animInstance->_hitEvent.AddUObject(this, &AMyCharacter::Attack_Hit);
+
 }
 
 // Called every frame
@@ -143,7 +145,7 @@ void AMyCharacter::Attack(const FInputActionValue& value)
 	{
 		_isAttack = true;
 
-		_curAttackSection = (_curAttackSection + 1) % 4 + 1;
+		_curAttackSection = ((_curAttackSection + 1) % 5) + 1;
 
 		_animInstance->PlayAnimMontage();
 
@@ -174,4 +176,11 @@ bool AMyCharacter::CanJump() const
 {
     // 점프 가능 여부 확인
     return GetCharacterMovement()->IsMovingOnGround();
+}
+
+void AMyCharacter::Attack_Hit()
+{
+	// 이 함수를 호출한 객체의 이름
+	auto name = GetName();
+	UE_LOG(LogTemp, Error, TEXT("Attacker : %s"), *name);
 }
