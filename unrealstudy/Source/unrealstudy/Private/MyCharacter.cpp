@@ -145,7 +145,7 @@ void AMyCharacter::Attack(const FInputActionValue& value)
 	{
 		_isAttack = true;
 
-		_curAttackSection = ((_curAttackSection + 1) % 5) + 1;
+		_curAttackSection = (_curAttackSection) % 5 + 1;
 
 		_animInstance->PlayAnimMontage();
 
@@ -183,4 +183,37 @@ void AMyCharacter::Attack_Hit()
 	// 이 함수를 호출한 객체의 이름
 	auto name = GetName();
 	UE_LOG(LogTemp, Error, TEXT("Attacker : %s"), *name);
+
+	FHitResult hitResult;
+	FCollisionQueryParams params(NAME_None, false, this);
+
+	float attackRange = 500.0f;
+	float attackRadius = 100.0f;
+
+	// 캡슐
+	// 1. 회전
+	// 2. 캡슐의 Radius, halfHeight
+	// 3. 충돌처리와 DebugDraw
+
+	bool bResult = GetWorld()->SweepSingleByChannel
+	(
+		OUT hitResult,
+		GetActorLocation(),
+		GetActorLocation() + GetActorForwardVector() * attackRange,
+		FQuat::Identity, // 회전 시키기
+		ECC_GameTraceChannel2,
+		FCollisionShape::MakeCapsule(attackRadius, attackRange * 0.5f),
+		params
+	);
+
+	FColor drawColor = FColor::Green;
+
+	if (bResult && hitResult.GetActor()->IsValidLowLevel())
+	{
+		drawColor = FColor::Red;
+
+	}
+
+	// 충돌체 그리기
+	DrawDebugCapsule(GetWorld(), GetActorLocation(), attackRange * 0.5f, attackRadius, FQuat::Identity, drawColor, false, 1.0f);
 }

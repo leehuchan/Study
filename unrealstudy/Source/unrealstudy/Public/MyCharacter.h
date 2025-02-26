@@ -92,7 +92,7 @@ private:
 	UPROPERTY()
 	class UMyAnimInstance* _animInstance;
 
-	int32 _curAttackSection = 1;
+	int32 _curAttackSection = 0;
 
 	float _vertical = 0.0f;
 	float _horizontal = 0.0f;
