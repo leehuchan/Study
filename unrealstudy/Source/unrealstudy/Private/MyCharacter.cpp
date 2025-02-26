@@ -95,6 +95,9 @@ void AMyCharacter::Move(const FInputActionValue& value)
 			FVector forWard = GetActorForwardVector();
 			FVector right = GetActorRightVector();
 
+			_vertical = moveVector.Y * 100.0f;
+			_horizontal = moveVector.X * 100.0f;
+
 			AddMovementInput(forWard, moveVector.Y * _speed);
 			AddMovementInput(right, moveVector.X * _speed);
 
@@ -139,8 +142,15 @@ void AMyCharacter::Attack(const FInputActionValue& value)
 	if (isPress)
 	{
 		_isAttack = true;
+
+		_curAttackSection = (_curAttackSection + 1) % 4 + 1;
+
 		_animInstance->PlayAnimMontage();
+
+		_animInstance->JumpToSection(_curAttackSection);
+
 	}
+
 }
 
 void AMyCharacter::TestDelegate()

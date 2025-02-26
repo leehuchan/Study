@@ -35,6 +35,11 @@ public:
 	UFUNCTION()
 	void PlayAnimMontage();
 
+	UFUNCTION()
+	void AnimNotify_Attack_Hit();
+
+	void JumpToSection(int32 sectionIndex);
+
 	AnimDelegateTest _attackStart;
 	AnimDelegateTest2 _attackStart2;
 
@@ -52,4 +57,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AnimMontage", Meta = (AllowPrivateAccess = "true"))
 	class UAnimMontage* _animMontage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AnimMontage", Meta = (AllowPrivateAccess = "true"))
+	float _vertical;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AnimMontage", Meta = (AllowPrivateAccess = "true"))
+	float _horizontal;
 };

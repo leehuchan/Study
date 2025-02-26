@@ -44,6 +44,8 @@ public:
 	UFUNCTION()
 	void AttackEnd(class UAnimMontage* Montage, bool BInterrupted);
 
+	float My_Vertical() { return _vertical; }
+	float My_Horizontal() { return _horizontal; }
 
 	bool CanJump() const;
 
@@ -87,4 +89,10 @@ private:
 
 	UPROPERTY()
 	class UMyAnimInstance* _animInstance;
+
+	int32 _curAttackSection = 1;
+
+	float _vertical = 0.0f;
+	float _horizontal = 0.0f;
+
 };
