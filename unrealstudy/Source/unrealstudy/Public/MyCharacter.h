@@ -35,8 +35,8 @@ public:
 	UFUNCTION()
 	void Attack(const struct FInputActionValue& value);
 
-	UFUNCTION() // 충돌되었을 때 호출되는 함수 / AActor* OtherActor 캐스팅해서 캐릭터 확인 해보자
-	void OnMyCharacterOverlap(UPrimitiveComponent* overlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFormWeep, const FHitResult& SweepResult);
+	//UFUNCTION() // 충돌되었을 때 호출되는 함수 / AActor* OtherActor 캐스팅해서 캐릭터 확인 해보자
+	//void OnMyCharacterOverlap(UPrimitiveComponent* overlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFormWeep, const FHitResult& SweepResult);
 
 	UFUNCTION()
 	void TestDelegate();
@@ -53,6 +53,9 @@ public:
 	// bool CanJump() const;
 
 	void Attack_Hit();
+
+	void AddHp(float amount);
+
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 private:

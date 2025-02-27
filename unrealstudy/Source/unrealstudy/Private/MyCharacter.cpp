@@ -122,7 +122,7 @@ void AMyCharacter::Look(const FInputActionValue& value)
 	if (Controller != nullptr)
 	{
 		AddControllerYawInput(lookAxisVector.X);
-		AddControllerPitchInput(lookAxisVector.Y);
+		AddControllerPitchInput(-lookAxisVector.Y);
 	}
 }
 
@@ -246,6 +246,11 @@ void AMyCharacter::Attack_Hit()
 
 	// 충돌체 그리기
 	DrawDebugCapsule(GetWorld(), center, attackRange * 0.5f, attackRadius, quat, drawColor, false, 1.0f);
+}
+
+void AMyCharacter::AddHp(float amount)
+{
+	_statComponent->AddCurHp(amount);
 }
 
 float AMyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
