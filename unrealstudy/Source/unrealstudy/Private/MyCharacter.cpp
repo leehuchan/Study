@@ -16,6 +16,10 @@
 
 #include "MyAnimInstance.h"
 
+#include "Engine/DamageEvents.h"
+
+#include "MyStatComponent.h"
+
 // Sets default values
 AMyCharacter::AMyCharacter()
 {
@@ -35,6 +39,8 @@ AMyCharacter::AMyCharacter()
 
 	_springArm->TargetArmLength = 500.0f;
 	_springArm->SetRelativeRotation(FRotator(-35.0f, 0.0f, 0.0f));
+
+	_statComponent = CreateDefaultSubobject<UMyStatComponent>(TEXT("Stat"));
 }
 
 // Called when the game starts or when spawned
@@ -52,6 +58,8 @@ void AMyCharacter::BeginPlay()
 	_animInstance->_attackStart3.AddDynamic(this, &AMyCharacter::TestDelegate);
 	_animInstance->OnMontageEnded.AddDynamic(this, &AMyCharacter::AttackEnd);
 	_animInstance->_hitEvent.AddUObject(this, &AMyCharacter::Attack_Hit);
+
+	// GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic();
 
 }
 
@@ -100,8 +108,8 @@ void AMyCharacter::Move(const FInputActionValue& value)
 			_vertical = moveVector.Y * 100.0f;
 			_horizontal = moveVector.X * 100.0f;
 
-			AddMovementInput(forWard, moveVector.Y * _speed);
-			AddMovementInput(right, moveVector.X * _speed);
+			AddMovementInput(forWard, moveVector.Y * _statComponent->GetSpeed());
+			AddMovementInput(right, moveVector.X * _statComponent->GetSpeed());
 
 		}
 	}
@@ -114,6 +122,7 @@ void AMyCharacter::Look(const FInputActionValue& value)
 	if (Controller != nullptr)
 	{
 		AddControllerYawInput(lookAxisVector.X);
+		AddControllerPitchInput(lookAxisVector.Y);
 	}
 }
 
@@ -122,10 +131,13 @@ void AMyCharacter::JumpA(const FInputActionValue& value)
 	if (_isAttack)
 		return;
 
-	//if (Controller != nullptr && CanJump())
-	//{
-	//	LaunchCharacter(FVector(0, 0, _jumpVelocity), false, true);
-	//}
+	/* 점프 직접 구현
+	if (Controller != nullptr && CanJump())
+	{
+		LaunchCharacter(FVector(0, 0, _jumpVelocity), false, true);
+	}
+	*/
+
 	bool isPress = value.Get<bool>();
 
 	if (isPress)
@@ -172,11 +184,13 @@ void AMyCharacter::AttackEnd(UAnimMontage* Montage, bool BInterrupted)
 	_isAttack = false;
 }
 
+/*
 bool AMyCharacter::CanJump() const
 {
     // 점프 가능 여부 확인
     return GetCharacterMovement()->IsMovingOnGround();
 }
+*/
 
 void AMyCharacter::Attack_Hit()
 {
@@ -187,20 +201,28 @@ void AMyCharacter::Attack_Hit()
 	FHitResult hitResult;
 	FCollisionQueryParams params(NAME_None, false, this);
 
-	float attackRange = 500.0f;
-	float attackRadius = 100.0f;
+	float attackRange = 150.0f;
+	float attackRadius = 70.0f;
 
 	// 캡슐
 	// 1. 회전
 	// 2. 캡슐의 Radius, halfHeight
 	// 3. 충돌처리와 DebugDraw
 
+	FVector forward = GetActorForwardVector();
+	FQuat quat = FQuat::FindBetweenVectors(FVector(0, 0, 1), forward);
+
+	FVector center = GetActorLocation() + forward * attackRange * 0.5f;
+	FVector start = GetActorLocation() + forward * attackRange * 0.5f;
+	FVector end = GetActorLocation() + forward * attackRange * 0.5f;
+
+	//Sweep : start에서 end까지 쓸고가는 형태의 충돌 판정
 	bool bResult = GetWorld()->SweepSingleByChannel
 	(
 		OUT hitResult,
-		GetActorLocation(),
-		GetActorLocation() + GetActorForwardVector() * attackRange,
-		FQuat::Identity, // 회전 시키기
+		start,
+		end,
+		quat, // 회전 시키기
 		ECC_GameTraceChannel2,
 		FCollisionShape::MakeCapsule(attackRadius, attackRange * 0.5f),
 		params
@@ -211,9 +233,24 @@ void AMyCharacter::Attack_Hit()
 	if (bResult && hitResult.GetActor()->IsValidLowLevel())
 	{
 		drawColor = FColor::Red;
+		AMyCharacter* victim = Cast<AMyCharacter>(hitResult.GetActor());
+
+		if (victim)
+		{
+			FDamageEvent damageEvent = FDamageEvent();
+
+			victim->TakeDamage(_statComponent->GetAtk(), damageEvent, GetController(), this);
+		}
 
 	}
 
 	// 충돌체 그리기
-	DrawDebugCapsule(GetWorld(), GetActorLocation(), attackRange * 0.5f, attackRadius, FQuat::Identity, drawColor, false, 1.0f);
+	DrawDebugCapsule(GetWorld(), center, attackRange * 0.5f, attackRadius, quat, drawColor, false, 1.0f);
+}
+
+float AMyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	_statComponent->AddCurHp(-DamageAmount);
+
+	return DamageAmount;
 }

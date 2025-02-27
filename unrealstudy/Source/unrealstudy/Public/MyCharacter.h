@@ -35,6 +35,9 @@ public:
 	UFUNCTION()
 	void Attack(const struct FInputActionValue& value);
 
+	UFUNCTION() // 충돌되었을 때 호출되는 함수 / AActor* OtherActor 캐스팅해서 캐릭터 확인 해보자
+	void OnMyCharacterOverlap(UPrimitiveComponent* overlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFormWeep, const FHitResult& SweepResult);
+
 	UFUNCTION()
 	void TestDelegate();
 
@@ -47,10 +50,10 @@ public:
 	float My_Vertical() { return _vertical; }
 	float My_Horizontal() { return _horizontal; }
 
-	bool CanJump() const;
+	// bool CanJump() const;
 
 	void Attack_Hit();
-
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
@@ -79,18 +82,18 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* _springArm;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stat", meta = (AllowPrivateAccess = "true"))
-	float _speed = 10.0f;
+	UPROPERTY()
+	class UMyAnimInstance* _animInstance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stat", meta = (AllowPrivateAccess = "true"))
-	float _jumpVelocity = 500.f;
+	class UMyStatComponent* _statComponent;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stat", meta = (AllowPrivateAccess = "true"))
+	//float _jumpVelocity = 500.f;
 
 	// Attack 액션이 호출되면 isAttack을 true
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
 	bool _isAttack;
-
-	UPROPERTY()
-	class UMyAnimInstance* _animInstance;
 
 	int32 _curAttackSection = 0;
 
