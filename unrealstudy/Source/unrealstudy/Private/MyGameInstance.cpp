@@ -24,8 +24,5 @@ void UMyGameInstance::Init()
 
 FMyStatData UMyGameInstance::GetStat_Level(int32 level)
 {
-	FString rowName = "Level_" + FString::FromInt(level);
-	auto row = _statTable->FindRow<FMyStatData>(*rowName, TEXT(""));
-
-	return *row;
+	return FMyStatData();
 }
