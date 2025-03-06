@@ -3,8 +3,6 @@
 
 #include "MyStatComponent.h"
 
-#include "MyGameInstance.h"
-
 // Sets default values for this component's properties
 UMyStatComponent::UMyStatComponent()
 {
@@ -21,12 +19,17 @@ void UMyStatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+<<<<<<< HEAD
 	//auto gameInstance = Cast<UMyGameInstance>(GetWorld()->GetGameInstance());
 	//_level = 1;
 	//auto statInfo = gameInstance->GetStat_Level(_level);
 	//_maxHp = statInfo.hp;
 	//_curHp = statInfo.hp;
 	//_atk = statInfo.atk;
+=======
+	// ...
+	
+>>>>>>> parent of a3afa73 (StatTable & HpBar)
 }
 
 
@@ -50,10 +53,9 @@ int32 UMyStatComponent::AddCurHp(float amount)
 	if (_curHp > _maxHp)
 		_curHp = _maxHp;
 
-	float ratio = _curHp / (float)_maxHp;
+	auto actor = GetOwner();
 
-	if (_hpChanged.IsBound())
-		_hpChanged.Broadcast(ratio);
+	UE_LOG(LogTemp, Warning, TEXT("Name : %s , HP : %d"), *actor->GetName(), _curHp);
 
 	return before - _curHp;
 }

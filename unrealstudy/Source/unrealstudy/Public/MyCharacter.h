@@ -98,9 +98,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
 	bool _isAttack;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
-	class UWidgetComponent* _hpBarWidget;
-
 	int32 _curAttackSection = 0;
 
 	float _vertical = 0.0f;
