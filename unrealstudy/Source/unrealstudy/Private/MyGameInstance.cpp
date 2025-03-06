@@ -19,10 +19,8 @@ UMyGameInstance::UMyGameInstance()
 void UMyGameInstance::Init()
 {
 	Super::Init();
+	FString rowName = "Level_1";
+	auto row = _statTable->FindRow<FMyStatData>(*rowName, TEXT(""));
 
-}
-
-FMyStatData UMyGameInstance::GetStat_Level(int32 level)
-{
-	return FMyStatData();
+	UE_LOG(LogTemp, Error, TEXT("Level : %d, Hp : %d, ATK : %d"), row->level, row->hp, row->atk);
 }

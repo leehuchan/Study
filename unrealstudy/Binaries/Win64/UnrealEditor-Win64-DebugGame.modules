@@ -2,10 +2,6 @@
 	"BuildId": "33043543",
 	"Modules": 
 	{
-<<<<<<< HEAD
-		"unrealstudy": "UnrealEditor-unrealstudy-1460-Win64-DebugGame.dll"
-=======
 		"unrealstudy": "UnrealEditor-unrealstudy-Win64-DebugGame.dll"
->>>>>>> parent of a3afa73 (StatTable & HpBar)
 	}
 }
