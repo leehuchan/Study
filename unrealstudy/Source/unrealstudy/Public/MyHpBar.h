@@ -15,6 +15,8 @@ class UNREALSTUDY_API UMyHpBar : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
 	void SetHpBarValue(float ratio);
 
 private:
