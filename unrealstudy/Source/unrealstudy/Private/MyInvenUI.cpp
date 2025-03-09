@@ -39,8 +39,8 @@ bool UMyInvenUI::Initialize()
     if (_slotImages.Num() == 0)
         return false;
 
-    _potionTexture = LoadObject<UTexture2D>(nullptr, TEXT("/Script/Engine.Texture2D'/Game/Graphics/Tex_seeds_06.Tex_seeds_06'"));
-    _defaultTexture = LoadObject<UTexture2D>(nullptr, TEXT("/Script/Engine.Texture2D'/Game/Graphics/Tex_Default.Tex_Default'"));
+    _potionTexture = LoadObject<UTexture2D>(nullptr, TEXT("/Script/Engine.Texture2D'/Game/Graphics/UI/Items/Tex_seeds_06.Tex_seeds_06'"));
+    _defaultTexture = LoadObject<UTexture2D>(nullptr, TEXT("/Script/Engine.Texture2D'/Game/Graphics/UI/Items/Tex_Default.Tex_Default'"));
 
     return true;
 }
