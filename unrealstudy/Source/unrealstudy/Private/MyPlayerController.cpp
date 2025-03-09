@@ -17,3 +17,15 @@ void AMyPlayerController::BeginPlay()
 		subSystem->AddMappingContext(_inputMappingContext, 0);
 	}
 }
+
+void AMyPlayerController::ShowUI()
+{
+	// 마우스 커서
+	bShowMouseCursor = true;
+}
+
+void AMyPlayerController::HideUI()
+{
+	// 마우스 커서
+	bShowMouseCursor = false;
+}

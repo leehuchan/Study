@@ -11,12 +11,14 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 
+#include "MyPlayerController.h"
 #include "MyStatComponent.h"
 #include "MyAnimInstance.h"
 #include "MyItem.h"
 
 #include "Blueprint/UserWidget.h"
 #include "MyInvenUI.h"
+#include "Components/Button.h"
 #include "MyInvenComponent.h"
 
 
@@ -50,15 +52,16 @@ void AMyPlayer::PostInitializeComponents()
 
     auto invenUI = Cast<UMyInvenUI>(_invenWidget);
     if (invenUI)
+    {
+
         _invenComponent->itemAddEvent.AddUObject(invenUI, &UMyInvenUI::SetItem_Index);
+        invenUI->Drop->OnClicked.AddDynamic(this, &AMyPlayer::Drop);
+    }
 }
 
 void AMyPlayer::BeginPlay()
 {
     Super::BeginPlay();
-
-    if (_invenWidget)
-        _invenWidget->AddToViewport();
 }
 
 void AMyPlayer::Tick(float DeltaTime)
@@ -77,6 +80,9 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
         enhancedInputCompnent->BindAction(_lookAction, ETriggerEvent::Triggered, this, &AMyPlayer::Look);
         enhancedInputCompnent->BindAction(_jumpAction, ETriggerEvent::Triggered, this, &AMyPlayer::JumpA);
         enhancedInputCompnent->BindAction(_attackAction, ETriggerEvent::Triggered, this, &AMyPlayer::Attack);
+        enhancedInputCompnent->BindAction(_dropAction, ETriggerEvent::Started, this, &AMyPlayer::DropA); // 키보드 X키
+        enhancedInputCompnent->BindAction(_invenAction, ETriggerEvent::Started, this, &AMyPlayer::InvenOpen);
+
     }
 }
 
@@ -142,12 +148,74 @@ void AMyPlayer::Attack(const FInputActionValue& value)
     }
 }
 
+void AMyPlayer::DropA(const FInputActionValue& value)
+{
+    if (_isAttack)
+        return;
+
+    bool isPress = value.Get<bool>();
+
+    Drop();
+}
+
+void AMyPlayer::InvenOpen(const FInputActionValue& value)
+{
+    bool isPress = value.Get<bool>();
+
+    if (isPress)
+    {
+        auto controller = Cast<AMyPlayerController>(GetController());
+        if (_isInvenOpen)
+        {
+            if (controller)
+                controller->HideUI();
+            _invenWidget->RemoveFromViewport();
+        }
+        else
+        {
+            if (controller)
+                controller->ShowUI();
+            _invenWidget->AddToViewport();
+        }
+        _isInvenOpen = !_isInvenOpen;
+    }
+}
+
 void AMyPlayer::AddItem(AMyItem* item)
 {
     // TODO
     if (item && _invenComponent)
     {
-        auto info = item->GetInfo();
-        _invenComponent->AddItem(info.itemId, info.type);
+        _invenComponent->AddItem(item);
+
     }
+}
+
+void AMyPlayer::Drop()
+{
+    UE_LOG(LogTemp, Error, TEXT("Drop"));
+
+    int32 curDropIndex = -1;
+    auto invenUI = Cast<UMyInvenUI>(_invenWidget);
+
+    if (invenUI)
+        curDropIndex = invenUI->_curIndex;
+
+    auto item = _invenComponent->DropItem(curDropIndex);
+
+    if (item == nullptr)
+        return;
+
+    invenUI->SetItem_Index(curDropIndex, FMyItemInfo());
+
+    FVector playerLocation = GetActorLocation();
+
+    float dropRadius = 200.0f;
+    FVector randomOffset = FMath::VRand() * FMath::FRandRange(100.0f, dropRadius);
+    FVector dropLocation = playerLocation + randomOffset;
+    dropLocation.Z = 40.0f;
+
+    item->SetActorLocation(dropLocation);
+    item->SetActorHiddenInGame(false);
+    item->SetActorEnableCollision(true);
 }

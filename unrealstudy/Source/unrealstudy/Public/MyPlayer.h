@@ -30,9 +30,15 @@ public:
 	void JumpA(const struct FInputActionValue& value);
 	UFUNCTION()
 	void Attack(const struct FInputActionValue& value);
-
+	UFUNCTION()
+	void DropA(const struct FInputActionValue& value);
+	UFUNCTION()
+	void InvenOpen(const struct FInputActionValue& value);
 
 	void AddItem(class AMyItem* item);
+
+	UFUNCTION()
+	void Drop();
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
@@ -57,4 +63,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item", meta = (AllowPrivateAccess = "true"))
 	class UMyInvenComponent* _invenComponent;
+
+	bool _isInvenOpen = false;
 };

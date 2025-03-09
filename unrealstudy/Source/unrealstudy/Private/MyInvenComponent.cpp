@@ -33,42 +33,65 @@ void UMyInvenComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	// ...
 }
 
-void UMyInvenComponent::AddItem(int32 itemID, MyItemType type)
+FMyItemInfo UMyInvenComponent::GetItemInfo_Index(int32 index)
 {
-    FMyItemInfo addItemInfo;
-    addItemInfo.itemId = itemID;
-    addItemInfo.type = type;
+    if (index < 0 || index >= _items.Num())
+        return FMyItemInfo();
 
-    FMyItemInfo temp;
-    auto target = _items.FindByPredicate([temp](const FMyItemInfo& info)-> bool
-        {
-            if (info.itemId == temp.itemId && info.type == temp.type)
-                return true;
-            return false;
-        });
+    if (_items[index] == nullptr)
+        return FMyItemInfo();
 
-    // 못찾음
-    if (target == nullptr)
-        return;
-
-    *target = addItemInfo;
-    // TODO : InventoryUI
-    int32 targetIndex = 0;
-
-    int64 temp1 = (int64)target;
-    int64 temp2 = (int64)(&_items[0]);
-    targetIndex = (temp1 - temp2) / sizeof(int64);
-
-    itemAddEvent.Broadcast(targetIndex, *target);
+    return _items[index]->GetInfo();
 }
 
-FMyItemInfo UMyInvenComponent::DropItem()
+void UMyInvenComponent::AddItem(AMyItem* item)
 {
-	return FMyItemInfo();
+	auto target = _items.FindByPredicate([](AMyItem* item)-> bool
+		{
+			if (item == nullptr)
+				return true;
+			return false;
+		});
+
+	// 빈칸이 없음
+	if (target == nullptr)
+		return;
+
+	*target = item;
+	// TODO : InventoryUI
+	int32 targetIndex = 0;
+
+	int64 temp1 = (int64)target;
+	int64 temp2 = (int64)(&_items[0]);
+	targetIndex = (temp1 - temp2) / sizeof(int64);
+
+	itemAddEvent.Broadcast(targetIndex, item->GetInfo());
 }
 
-FMyItemInfo UMyInvenComponent::DropItem(int32 index)
+AMyItem* UMyInvenComponent::DropItem()
 {
-	return FMyItemInfo();
+	return nullptr;
+}
+
+AMyItem* UMyInvenComponent::DropItem(int32 index)
+{
+	if (index >= _items.Num() || index < 0)
+		return nullptr;
+
+	if (_items[index] == nullptr)
+		return nullptr;
+
+	AMyItem* dropItem = _items[index];
+	_items[index] = nullptr;
+	// TODO : 실제 아이템이 바닥에 떨어지게
+	// 1. GetOwner() -> Player
+	// => Cast<MyPlayer> 
+	// => MyPlayer의 Drop함수를 호출
+	// player->DropItem(dropItem);
+
+	// 2. ItemDropEvent를 만들어서
+	// => MyPlayer의 Drop함수를 바인딩해서 간접호출
+
+	return dropItem;
 }
 
