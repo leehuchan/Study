@@ -18,9 +18,15 @@ class UNREALSTUDY_API UMyInvenUI : public UUserWidget
 public:
     virtual void NativeConstruct() override;
 
+    void SetItem_Index(int32 index, FMyItemInfo info);
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
     class UUniformGridPanel* Grid;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TArray<class UImage*> _slotImages;
+
+    // #TODO
+    UPROPERTY()
+    UTexture2D* _potionTexture;
 };

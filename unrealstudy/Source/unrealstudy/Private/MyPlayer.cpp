@@ -11,10 +11,13 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 
-#include "MyPlayerController.h"
 #include "MyStatComponent.h"
 #include "MyAnimInstance.h"
 #include "MyItem.h"
+
+#include "Blueprint/UserWidget.h"
+#include "MyInvenUI.h"
+#include "MyInvenComponent.h"
 
 
 AMyPlayer::AMyPlayer()
@@ -30,11 +33,32 @@ AMyPlayer::AMyPlayer()
 
     _springArm->TargetArmLength = 500.0f;
     _springArm->SetRelativeRotation(FRotator(-35.0f, 0.0f, 0.0f));
+
+    // Inventory
+    static ConstructorHelpers::FClassFinder<UMyInvenUI> invenClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrints/BP_MyInven.BP_MyInven_C'"));
+    if (invenClass.Succeeded())
+    {
+        _invenWidget = CreateWidget<UUserWidget>(GetWorld(), invenClass.Class);
+    }
+
+    _invenComponent = CreateDefaultSubobject<UMyInvenComponent>(TEXT("InvenComponent"));
+}
+
+void AMyPlayer::PostInitializeComponents()
+{
+    Super::PostInitializeComponents();
+
+    auto invenUI = Cast<UMyInvenUI>(_invenWidget);
+    if (invenUI)
+        _invenComponent->itemAddEvent.AddUObject(invenUI, &UMyInvenUI::SetItem_Index);
 }
 
 void AMyPlayer::BeginPlay()
 {
     Super::BeginPlay();
+
+    if (_invenWidget)
+        _invenWidget->AddToViewport();
 }
 
 void AMyPlayer::Tick(float DeltaTime)
@@ -120,6 +144,10 @@ void AMyPlayer::Attack(const FInputActionValue& value)
 
 void AMyPlayer::AddItem(AMyItem* item)
 {
-    _items.Add(item);
-    UE_LOG(LogTemp, Log, TEXT("Items count : %d"), _items.Num());
+    // TODO
+    if (item && _invenComponent)
+    {
+        auto info = item->GetInfo();
+        _invenComponent->AddItem(info.itemId, info.type);
+    }
 }

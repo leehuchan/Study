@@ -17,6 +17,7 @@ class UNREALSTUDY_API AMyPlayer : public AMyCharacter
 public:
 	AMyPlayer();
 
+	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -29,6 +30,7 @@ public:
 	void JumpA(const struct FInputActionValue& value);
 	UFUNCTION()
 	void Attack(const struct FInputActionValue& value);
+
 
 	void AddItem(class AMyItem* item);
 
@@ -51,5 +53,8 @@ private:
 	class USpringArmComponent* _springArm;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item", meta = (AllowPrivateAccess = "true"))
-	TArray<class AMyItem*> _items;
+	class UUserWidget* _invenWidget;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item", meta = (AllowPrivateAccess = "true"))
+	class UMyInvenComponent* _invenComponent;
 };
