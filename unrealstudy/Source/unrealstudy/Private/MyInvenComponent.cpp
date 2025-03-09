@@ -3,6 +3,8 @@
 
 #include "MyInvenComponent.h"
 
+#include "MyItem.h"
+
 // Sets default values for this component's properties
 UMyInvenComponent::UMyInvenComponent()
 {

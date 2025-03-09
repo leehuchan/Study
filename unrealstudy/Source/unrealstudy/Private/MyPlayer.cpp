@@ -53,7 +53,7 @@ void AMyPlayer::PostInitializeComponents()
     auto invenUI = Cast<UMyInvenUI>(_invenWidget);
     if (invenUI)
     {
-
+        invenUI->_invenComponent = _invenComponent;
         _invenComponent->itemAddEvent.AddUObject(invenUI, &UMyInvenUI::SetItem_Index);
         invenUI->Drop->OnClicked.AddDynamic(this, &AMyPlayer::Drop);
     }
