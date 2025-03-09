@@ -30,6 +30,7 @@ public:
 	UFUNCTION()
 	void Attack(const struct FInputActionValue& value);
 
+	void AddItem(class AMyItem* item);
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
@@ -48,4 +49,7 @@ private:
 	class UCameraComponent* _camera;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* _springArm;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item", meta = (AllowPrivateAccess = "true"))
+	TArray<class AMyItem*> _items;
 };

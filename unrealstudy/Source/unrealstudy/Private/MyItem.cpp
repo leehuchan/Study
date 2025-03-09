@@ -5,6 +5,7 @@
 
 #include "Components/CapsuleComponent.h"
 #include "MyCharacter.h"
+#include "MyPlayer.h"
 #include "MyPlayerController.h"
 
 // Sets default values
@@ -45,12 +46,13 @@ void AMyItem::Tick(float DeltaTime)
 
 void AMyItem::onOverlap(UPrimitiveComponent* overlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFormWeep, const FHitResult& SweepResult)
 {
-	auto character = Cast<AMyCharacter>(OtherActor);
+	auto character = Cast<AMyPlayer>(OtherActor);
 	auto player = Cast<AMyPlayerController>(character->GetController());
 
 	if (character != nullptr && player != nullptr)
 	{
 		character->AddHp(30.0f);
+		character->AddItem(this);
 
 		SetActorHiddenInGame(true); // 가시성을 숨김
 		SetActorEnableCollision(false); // 충돌 설정을 비활성화
