@@ -1,0 +1,70 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "MyAIController.h"
+
+#include "NavigationSystem.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
+
+#include "BehaviorTree/BlackboardData.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
+
+AMyAIController::AMyAIController()
+{
+}
+
+void AMyAIController::OnPossess(APawn* InPawn)
+{
+	// 상속 받았으면 무조건 해야함
+	Super::OnPossess(InPawn);
+
+	// 3초마다 RandMove함수 반복적으로 호출
+	// GetWorld()->GetTimerManager().SetTimer(_timerHandle, this, &AMyAIController::RandMove, 3.0f, true);
+
+	UBlackboardComponent* temp = Blackboard;
+
+	if (UseBlackboard(_blackBoard, temp))
+	{
+		if (RunBehaviorTree(_behaviorTree))
+		{
+
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("BT Failed"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("BB Failed"));
+	}
+}
+
+void AMyAIController::OnUnPossess()
+{
+	Super::OnUnPossess();
+
+	// GetWorld()->GetTimerManager().ClearTimer(_timerHandle);
+}
+
+void AMyAIController::RandMove()
+{
+	auto curPawn = GetPawn(); // 현재 빙의되어있는 폰
+
+	if (curPawn->IsValidLowLevel() == false)
+		return;
+
+	// 현재 설정한 NavMesh를 갖고 오는 것
+	auto navMesh = UNavigationSystemV1::GetNavigationSystem(GetWorld());
+	if (navMesh->IsValidLowLevel() == false)
+		return;
+
+	// 랜덤한 위치 => navMesh 물어보기
+	FNavLocation randLocation;
+
+	if (navMesh->GetRandomPointInNavigableRadius(FVector::ZeroVector, 5.0f, randLocation))
+	{
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, randLocation.Location);
+	}
+}
