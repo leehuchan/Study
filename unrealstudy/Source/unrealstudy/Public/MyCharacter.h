@@ -40,8 +40,7 @@ public:
 
 	float My_Vertical() { return _vertical; }
 	float My_Horizontal() { return _horizontal; }
-
-	// bool CanJump() const;
+	float AttackRange() { return _attackRange; }
 
 	void Attack_Hit();
 	void DeadEvent();
@@ -51,6 +50,7 @@ public:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 	bool IsDead();
+	bool IsAttacking() { return _isAttack; }
 
 protected:
 	// 언리얼의 핵심구조
@@ -67,9 +67,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stat", meta = (AllowPrivateAccess = "true"))
 	class UMyStatComponent* _statComponent;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stat", meta = (AllowPrivateAccess = "true"))
-	//float _jumpVelocity = 500.f;
-
 	// Attack 액션이 호출되면 isAttack을 true
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
 	bool _isAttack;
@@ -78,5 +75,8 @@ protected:
 
 	float _vertical = 0.0f;
 	float _horizontal = 0.0f;
+
+	UPROPERTY(EditAnywhere)
+	float _attackRange = 300.0f;
 
 };
