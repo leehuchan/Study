@@ -23,6 +23,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void setParticle(class UNiagaraSystem* particle);
+	void Stop();
+	void Play(FVector pos);
+	bool IsActive();
+
+	UFUNCTION()
+	void Finished(class UNiagaraComponent* PSystem);
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class USceneComponent* _sceneComponent;

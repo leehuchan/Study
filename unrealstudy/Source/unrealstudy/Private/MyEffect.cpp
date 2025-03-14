@@ -43,3 +43,33 @@ void AMyEffect::Tick(float DeltaTime)
 
 }
 
+void AMyEffect::setParticle(UNiagaraSystem* particle)
+{
+	if (particle->IsValidLowLevel())
+	{
+		_niagaraComponent->SetAsset(particle);
+		_niagaraComponent->OnSystemFinished.AddDynamic(this, &AMyEffect::Finished);
+	}
+}
+
+void AMyEffect::Stop()
+{
+	_niagaraComponent->DeactivateImmediate();
+}
+
+void AMyEffect::Play(FVector pos)
+{
+	_niagaraComponent->Activate(true);
+	SetActorLocation(pos);
+}
+
+bool AMyEffect::IsActive()
+{
+	return _niagaraComponent->IsActive();
+}
+
+void AMyEffect::Finished(UNiagaraComponent* PSystem)
+{
+	PSystem->DeactivateImmediate();
+}
+

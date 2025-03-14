@@ -4,9 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "MyEffectManager.h"
+
 #include "MyStatComponent.h"
 #include "MyGameInstance.generated.h"
 
+#define EFFECT_M Cast<UMyGameInstance>(GetGameInstance())->EffectManager()
 /**
  * 
  */
@@ -21,7 +24,12 @@ public:
 	virtual void Init() override;
 	FMyStatData GetStat_Level(int32 level);
 
+	AMyEffectManager* EffectManager() { return _effectManager; }
+
 private:
 	UPROPERTY()
 	class UDataTable* _statTable;
+
+	UPROPERTY()
+	class AMyEffectManager* _effectManager;
 };
