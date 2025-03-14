@@ -11,6 +11,8 @@
 #include "Components/WidgetComponent.h"
 #include "MyPlayerController.h"
 
+#include "MyEffect.h"
+
 // Sets default values
 AMyCharacter::AMyCharacter()
 {
@@ -115,6 +117,9 @@ void AMyCharacter::Attack_Hit()
 		if (victim)
 		{
 			FDamageEvent damageEvent = FDamageEvent();
+
+			FVector hitpoint = hitResult.ImpactPoint;
+			GetWorld()->SpawnActor<AMyEffect>(hitpoint, FRotator::ZeroRotator);
 
 			victim->TakeDamage(_statComponent->GetAtk(), damageEvent, GetController(), this);
 		}
