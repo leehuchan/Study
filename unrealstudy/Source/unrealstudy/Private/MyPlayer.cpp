@@ -21,6 +21,7 @@
 #include "Components/Button.h"
 #include "MyInvenComponent.h"
 
+#include "MyProjectile.h"
 
 AMyPlayer::AMyPlayer()
 {
@@ -145,6 +146,12 @@ void AMyPlayer::Attack(const FInputActionValue& value)
 		_animInstance->PlayAnimMontage();
 
 		_animInstance->JumpToSection(_curAttackSection);
+
+        // Åõ»çÃ¼
+        auto projectile = GetWorld()->SpawnActor<AMyProjectile>(_projectileClass, GetActorLocation() + GetActorForwardVector() * 300, FRotator::ZeroRotator);
+
+        projectile->FireDirection(GetActorForwardVector());
+
     }
 }
 

@@ -4,6 +4,7 @@
 #include "MyEffectManager.h"
 
 #include "NiagaraSystem.h"
+#include "Particles/ParticleSystem.h"
 
 // Sets default values
 AMyEffectManager::AMyEffectManager()
@@ -13,13 +14,8 @@ AMyEffectManager::AMyEffectManager()
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>("RootComponent");
 
-	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> particle(TEXT("/Script/Niagara.NiagaraSystem'/Game/Graphics/Effect/Vefects/Free_Fire/Shared/Particles/NS_Fire_Big_Simple.NS_Fire_Big_Simple'"));
-
-	if (particle.Succeeded())
-	{
-		_particleTable.Add(TEXT("BigFire"), particle.Object);
-	}
-
+	CreateEffect(TEXT("BigFire"), TEXT("/Script/Niagara.NiagaraSystem'/Game/Graphics/Effect/Vefects/Free_Fire/Shared/Particles/NS_Fire_Big_Simple.NS_Fire_Big_Simple'"));
+	CreateEffect(TEXT("MeleeAttack"), TEXT("/Script/Engine.ParticleSystem'/Game/ParagonSunWukong/FX/Particles/Wukong/Abilities/Primary/FX/P_Wukong_Impact.P_Wukong_Impact'"));
 }
 
 // Called when the game starts or when spawned
@@ -37,7 +33,15 @@ void AMyEffectManager::BeginPlay()
 		{
 			auto effect = GetWorld()->SpawnActor<AMyEffect>(FVector::ZeroVector, FRotator::ZeroRotator);
 			effect->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-			effect->setParticle(_particleTable[TEXT("BigFire")]);
+			auto niagara = Cast<UNiagaraSystem>(_particleTable[name]);
+			if (niagara)
+			{
+				effect->SetParticle(niagara);
+			}
+			else
+			{
+				effect->SetParticle(Cast<UParticleSystem>(_particleTable[name]));
+			}
 			effect->Stop();
 
 			_effectTable[name]._effects.Add(effect);
@@ -74,5 +78,16 @@ void AMyEffectManager::PlayEffect(FString key, FVector pos)
 	{
 		(*iter)->Play(pos);
 	}
+}
+
+void AMyEffectManager::CreateEffect(FString key, FString path)
+{
+	ConstructorHelpers::FObjectFinder<UFXSystemAsset> particle(*path);
+
+	if (particle.Succeeded())
+	{
+		_particleTable.Add(key, particle.Object);
+	}
+
 }
 
