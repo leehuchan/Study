@@ -23,6 +23,9 @@
 
 #include "MyProjectile.h"
 
+#include "MyGameInstance.h"
+#include "Engine/DamageEvents.h"
+
 AMyPlayer::AMyPlayer()
 {
     PrimaryActorTick.bCanEverTick = true;
@@ -142,16 +145,23 @@ void AMyPlayer::Attack(const FInputActionValue& value)
     {
         _isAttack = true;
 
-        _curAttackSection = (_curAttackSection) % 5 + 1;
+        _curAttackSection = (_curAttackSection % 5) + 1;
 		_animInstance->PlayAnimMontage();
 
 		_animInstance->JumpToSection(_curAttackSection);
 
         // 투사체
-        auto projectile = GetWorld()->SpawnActor<AMyProjectile>(_projectileClass, GetActorLocation() + GetActorForwardVector() * 300, FRotator::ZeroRotator);
+        if (_curAttackSection == 5)
+        {
+            FVector startPos = GetMesh()->GetSocketLocation(TEXT("s_throw"));
+            FVector direction = _camera->GetForwardVector();
 
-        projectile->FireDirection(GetActorForwardVector());
+            auto projectile = GetWorld()->SpawnActor<AMyProjectile>(_projectileClass, startPos, FRotator::ZeroRotator);
 
+            projectile->SetOwner(this);
+            projectile->FireDirection(direction);
+        }
+        
     }
 }
 
@@ -186,6 +196,58 @@ void AMyPlayer::InvenOpen(const FInputActionValue& value)
         }
         _isInvenOpen = !_isInvenOpen;
     }
+}
+
+void AMyPlayer::Attack_Hit()
+{
+    if (IsDead())
+        return;
+
+    FHitResult hitResult;
+    FCollisionQueryParams params(NAME_None, false, this);
+
+    float attackRadius = 70.0f;
+
+    FVector forward = _camera->GetForwardVector();
+    FQuat quat = FQuat::FindBetweenVectors(FVector(0, 0, 1), forward);
+
+    FVector center = GetActorLocation() + forward * _attackRange * 0.5f;
+    FVector start = GetActorLocation() + forward * _attackRange * 0.5f;
+    FVector end = GetActorLocation() + forward * _attackRange * 0.5f;
+
+    //Sweep : start에서 end까지 쓸고가는 형태의 충돌 판정
+    bool bResult = GetWorld()->SweepSingleByChannel
+    (
+        OUT hitResult,
+        start,
+        end,
+        quat, // 회전 시키기
+        ECC_GameTraceChannel2,
+        FCollisionShape::MakeCapsule(attackRadius, _attackRange * 0.5f),
+        params
+    );
+
+    FColor drawColor = FColor::Green;
+
+    if (bResult && hitResult.GetActor()->IsValidLowLevel())
+    {
+        drawColor = FColor::Red;
+        AMyCharacter* victim = Cast<AMyCharacter>(hitResult.GetActor());
+
+        if (victim)
+        {
+            FDamageEvent damageEvent = FDamageEvent();
+
+            FVector hitPoint = hitResult.ImpactPoint;
+            EFFECT_M->PlayEffect("MeleeAttack", hitPoint);
+
+            victim->TakeDamage(_statComponent->GetAtk(), damageEvent, GetController(), this);
+        }
+
+    }
+
+    // 충돌체 그리기
+    DrawDebugCapsule(GetWorld(), center, _attackRange * 0.5f, attackRadius, quat, drawColor, false, 1.0f);
 }
 
 void AMyPlayer::AddItem(AMyItem* item)

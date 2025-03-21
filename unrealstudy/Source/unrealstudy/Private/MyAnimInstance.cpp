@@ -50,6 +50,8 @@ void UMyAnimInstance::AnimNotify_Attack_Hit()
 }
 
 void UMyAnimInstance::AnimNotify_Dead()
+
+
 {
 	// 죽었을 때 나오는 이벤트들
 	if (_deadEvent.IsBound())

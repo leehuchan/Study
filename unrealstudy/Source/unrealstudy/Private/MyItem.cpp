@@ -27,7 +27,7 @@ void AMyItem::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	_collider->OnComponentBeginOverlap.AddDynamic(this, &AMyItem::onOverlap);
+	_collider->OnComponentBeginOverlap.AddDynamic(this, &AMyItem::OnOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -44,7 +44,7 @@ void AMyItem::Tick(float DeltaTime)
 
 }
 
-void AMyItem::onOverlap(UPrimitiveComponent* overlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFormWeep, const FHitResult& SweepResult)
+void AMyItem::OnOverlap(UPrimitiveComponent* overlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFormWeep, const FHitResult& SweepResult)
 {
 	auto character = Cast<AMyPlayer>(OtherActor);
 	if (character == nullptr)

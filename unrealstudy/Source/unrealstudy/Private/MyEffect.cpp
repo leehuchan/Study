@@ -11,7 +11,7 @@
 // Sets default values
 AMyEffect::AMyEffect()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	_sceneComponent = CreateDefaultSubobject<USceneComponent>("SceneComponent");
@@ -21,15 +21,6 @@ AMyEffect::AMyEffect()
 	RootComponent = _sceneComponent;
 	_niagaraComponent->SetupAttachment(_sceneComponent);
 	_particleComponent->SetupAttachment(_sceneComponent);
-
-	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> test(TEXT("/Script/Niagara.NiagaraSystem'/Game/Graphics/Effect/Vefects/Free_Fire/Shared/Particles/NS_Fire_Big_Simple.NS_Fire_Big_Simple'"));
-
-	if (test.Succeeded())
-	{
-		_niagaraComponent->SetAsset(test.Object);
-
-	}
-
 }
 
 // Called when the game starts or when spawned

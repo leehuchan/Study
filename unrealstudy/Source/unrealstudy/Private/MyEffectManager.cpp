@@ -61,9 +61,7 @@ void AMyEffectManager::PlayEffect(FString key, FVector pos)
 	auto effects = _effectTable.Find(key);
 
 	if (effects == nullptr)
-	{
 		return;
-	}
 
 	// ÀÌÆåÆ® ²¨Á®ÀÖ´Â °Í Ã£±â
 	auto iter = effects->_effects.FindByPredicate([](AMyEffect* effect)->bool

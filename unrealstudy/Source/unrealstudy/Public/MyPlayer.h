@@ -35,6 +35,7 @@ public:
 	UFUNCTION()
 	void InvenOpen(const struct FInputActionValue& value);
 
+	virtual void Attack_Hit() override;
 	void AddItem(class AMyItem* item);
 
 	UFUNCTION()
@@ -53,6 +54,7 @@ private:
 	class UInputAction* _dropAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* _invenAction;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* _camera;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
@@ -64,7 +66,7 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item", meta = (AllowPrivateAccess = "true"))
 	class UMyInvenComponent* _invenComponent;
 
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class AMyProjectile> _projectileClass;
 
 	bool _isInvenOpen = false;

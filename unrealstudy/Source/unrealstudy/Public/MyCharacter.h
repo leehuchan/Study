@@ -42,7 +42,7 @@ public:
 	float My_Horizontal() { return _horizontal; }
 	float AttackRange() { return _attackRange; }
 
-	void Attack_Hit();
+	virtual void Attack_Hit();
 	void DeadEvent();
 
 	void AddHp(float amount);
@@ -71,7 +71,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
 	bool _isAttack;
 
-	int32 _curAttackSection = 1;
+	int32 _curAttackSection = 0;
 
 	float _vertical = 0.0f;
 	float _horizontal = 0.0f;

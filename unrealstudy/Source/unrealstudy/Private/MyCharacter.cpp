@@ -121,8 +121,8 @@ void AMyCharacter::Attack_Hit()
 			FDamageEvent damageEvent = FDamageEvent();
 
 			// TODO : Effect Pooling
-			FVector hitpoint = hitResult.ImpactPoint;
-			EFFECT_M->PlayEffect("BigFire", hitpoint);
+			FVector hitPoint = hitResult.ImpactPoint;
+			EFFECT_M->PlayEffect("MeleeAttack", hitPoint);
 
 			victim->TakeDamage(_statComponent->GetAtk(), damageEvent, GetController(), this);
 		}

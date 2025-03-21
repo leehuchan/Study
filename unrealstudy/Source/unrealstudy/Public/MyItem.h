@@ -45,7 +45,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-	void onOverlap(class UPrimitiveComponent* overlappedComponent, class AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFormWeep, const struct FHitResult& SweepResult);
+	void OnOverlap(class UPrimitiveComponent* overlappedComponent, class AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFormWeep, const struct FHitResult& SweepResult);
 
 	const FMyItemInfo& GetInfo() { return _info; }
 
