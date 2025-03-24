@@ -64,10 +64,10 @@ void AMyBoss::Attack_AI()
 {
 	if (_isAttack) return;
 
-	//_isAttack = true;
+	_isAttack = true;
 
-	//_curAttackSection = (_curAttackSection) % 5 + 1;
-	//_animInstance->PlayAnimMontage();
+	_curAttackSection = (_curAttackSection) % 5 + 1;
+	_animInstance->PlayAnimMontage();
 
-	//_animInstance->JumpToSection(_curAttackSection);
+	_animInstance->JumpToSection(_curAttackSection);
 }
