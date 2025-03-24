@@ -9,6 +9,7 @@
 
 void UMyHpBar::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
+	// ¹ÙÀÎµù
 	Super::NativeTick(MyGeometry, InDeltaTime);
 }
 
