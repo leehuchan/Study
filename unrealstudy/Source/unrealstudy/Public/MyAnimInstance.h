@@ -64,15 +64,27 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AnimMontage", Meta = (AllowPrivateAccess = "true"))
 	class UAnimMontage* _animMontage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AnimMontage", Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Move", Meta = (AllowPrivateAccess = "true"))
 	float _vertical;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AnimMontage", Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Move", Meta = (AllowPrivateAccess = "true"))
 	float _horizontal;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AnimMontate", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Dead", meta = (AllowPrivateAccess = "true"))
 	bool _isDead = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AnimMontate", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack", meta = (AllowPrivateAccess = "true"))
 	bool _isAttacking = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AimOffset", meta = (AllowPrivateAccess = "true"))
+	float _yaw = 0.0f; // 좌우 회전
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AimOffset", meta = (AllowPrivateAccess = "true"))
+	float _pitch = 0.0f; // 위아래 회전
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AimOffset", meta = (AllowPrivateAccess = "true"))
+	bool _isTurnLeft = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AimOffset", meta = (AllowPrivateAccess = "true"))
+	bool _isTurnRight = false;
 };

@@ -41,6 +41,9 @@ public:
 	UFUNCTION()
 	void Drop();
 
+	bool _isTurnLeft = false;
+	bool _isTurnRight = false;
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* _moveAction;

@@ -6,10 +6,12 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Math/UnrealMathUtility.h"
 
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 #include "MyPlayerController.h"
 #include "MyStatComponent.h"
@@ -48,6 +50,8 @@ AMyPlayer::AMyPlayer()
     }
 
     _invenComponent = CreateDefaultSubobject<UMyInvenComponent>(TEXT("InvenComponent"));
+
+    bUseControllerRotationYaw = false;
 }
 
 void AMyPlayer::PostInitializeComponents()
@@ -99,8 +103,8 @@ void AMyPlayer::Move(const FInputActionValue& value)
     {
         if (moveVector.Length() > 0.01f)
         {
-            FVector forWard = GetActorForwardVector();
-            FVector right = GetActorRightVector();
+            FVector forWard = GetControlRotation().Vector();
+            FVector right = forWard.RotateAngleAxis(90, FVector(0.0f, 0.0f, 1.0f));
 
             _vertical = moveVector.Y;
             _horizontal = moveVector.X;
@@ -108,6 +112,7 @@ void AMyPlayer::Move(const FInputActionValue& value)
             AddMovementInput(forWard, moveVector.Y * _statComponent->GetSpeed());
             AddMovementInput(right, moveVector.X * _statComponent->GetSpeed());
         }
+        GetCharacterMovement()->bUseControllerDesiredRotation = true;
     }
 }
 
@@ -119,6 +124,33 @@ void AMyPlayer::Look(const FInputActionValue& value)
     {
         AddControllerYawInput(lookAxisVector.X);
         AddControllerPitchInput(-lookAxisVector.Y);
+
+        float degree = FMath::FindDeltaAngleDegrees(GetActorRotation().Yaw, GetControlRotation().Yaw);
+
+        // 카메라가 오른쪽을 넘어가고, 캐릭터는 정면
+        if (degree > 90.0f)
+        {
+            _isTurnRight = true;
+            GetCharacterMovement()->bUseControllerDesiredRotation = true;
+        }
+        // 카메라가 왼쪽을 넘어가고, 캐릭터는 정면
+        else if (degree < -90.0f)
+        {
+            _isTurnLeft = true;
+            GetCharacterMovement()->bUseControllerDesiredRotation = true;
+        }
+        // 움직이거나, 공격
+        else if (GetCharacterMovement()->Velocity.Size() > 0.01f || _isAttack)
+        {
+            GetCharacterMovement()->bUseControllerDesiredRotation = true;
+        }
+        // 
+        else if(FMath::Abs(degree) < 0.1f)
+        {
+            _isTurnLeft = false;
+            _isTurnRight = false;
+            GetCharacterMovement()->bUseControllerDesiredRotation = false;
+        }
     }
 }
 
@@ -144,6 +176,8 @@ void AMyPlayer::Attack(const FInputActionValue& value)
 		_animInstance->PlayAnimMontage();
 
 		_animInstance->JumpToSection(_curAttackSection);
+
+        GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
         // 투사체
         if (_curAttackSection == 5)
